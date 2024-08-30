@@ -2,15 +2,15 @@
 
 namespace NScript.CommonApi;
 
-public ref struct Payload
+public struct OutputPayload
 {
-    public static Payload Empty => new Payload(IntPtr.Zero, 0);
-    public unsafe static Payload TransferFromBytes(byte[] bytes)
+    public static OutputPayload Empty => new OutputPayload(IntPtr.Zero, 0);
+    public unsafe static OutputPayload TransferFromBytes(byte[] bytes)
     {
-        var payload = Payload.Empty;
+        var payload = OutputPayload.Empty;
         fixed (byte* pData = bytes)
         {
-            payload = new Payload((IntPtr)pData, bytes.Length);
+            payload = new OutputPayload((IntPtr)pData, bytes.Length);
         }
 
         return payload;
@@ -19,7 +19,7 @@ public ref struct Payload
     public IntPtr DataPointer;
     public int Length;
 
-    public Payload(IntPtr dataPointer, int length)
+    public OutputPayload(IntPtr dataPointer, int length)
     {
         DataPointer = dataPointer;
         Length = length;

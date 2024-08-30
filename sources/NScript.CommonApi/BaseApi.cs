@@ -1,21 +1,32 @@
 ﻿using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
+using static NScript.CommonApi.IApiHandler;
 
 namespace NScript.CommonApi;
 
 public class BaseApi
 {
-    protected unsafe IntPtr HandleApi(IntPtr pRoute, IntPtr pJsonParams, IntPtr pDataPayload, int payloadLength)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="pRoute"></param>
+    /// <param name="pJsonParams"></param>
+    /// <param name="pDataPayload"></param>
+    /// <param name="payloadLength"></param>
+    /// <returns></returns>
+    protected unsafe OutputPayload HandleApi(IntPtr pRoute, IntPtr pJsonParams, IntPtr pDataPayload, int payloadLength)
     {
-        if (pRoute == IntPtr.Zero || pJsonParams == IntPtr.Zero) return IntPtr.Zero;
+        if (pRoute == IntPtr.Zero || pJsonParams == IntPtr.Zero) return OutputPayload.Empty;
 
+        // 将指针转换为字符串
         string jsonParams = Marshal.PtrToStringAnsi(pJsonParams)!;
         string route = Marshal.PtrToStringAnsi(pRoute)!;
+
         var payload = (pDataPayload == IntPtr.Zero || payloadLength <= 0) ? Payload.Empty : new Payload(pDataPayload, payloadLength);
 
-        String result = HandleRoute(route, jsonParams, payload);
-        if (result == null) return IntPtr.Zero;
-        IntPtr pResult = Marshal.StringToHGlobalAnsi(result);
+        OutputPayload pResult = HandleRoute(route, jsonParams, payload);
+        //if (result == null) return IntPtr.Zero;
+        //IntPtr pResult = Marshal.StringToHGlobalAnsi(result);
         return pResult;
     }
 
@@ -27,13 +38,15 @@ public class BaseApi
         this.ApiHandlers[route]=handler;
     }
 
-    protected String HandleRoute(String route, String jsonParams, Payload payload)
+    protected OutputPayload HandleRoute(String route, String jsonParams, Payload payload)
     {
         IApiHandler? match;
         this.ApiHandlers.TryGetValue(route, out match);
 
         if (match == null)
-            return BaseResult.CreateErrorJsonString(Error.InvalidRoute);
+            // todo 当未匹配到handle，直接抛出错误
+            throw new Exception("Invalid Route");
+            //return BaseResult.CreateErrorJsonString(Error.InvalidRoute);
 
         return match.Handle(jsonParams, payload);
     }
@@ -62,6 +75,7 @@ public class BaseApi
 
         return hander.Invoke(input, payload);
     }
+
 
     public unsafe TOutput Invoke<TInput, TOutput>(string route, TInput? input, byte[] payloadData) where TOutput : BaseResult, new()
     {

@@ -1,4 +1,6 @@
-﻿namespace NScript.CommonApi.Demo.NativeLibrary.Sdk;
+﻿using System.Runtime.InteropServices;
+
+namespace NScript.CommonApi.Demo.NativeLibrary.Sdk;
 
 public class EchoInput
 {
@@ -9,4 +11,5 @@ public class EchoOutput : BaseResult
 {
     public String? echo { get; set; }
     public int sum { get; set; }
+    public byte[] data { get; set; }
 }

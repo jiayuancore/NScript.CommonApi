@@ -17,6 +17,7 @@ public class TestCase
         }
 
         output = MyLib.Invoke<EchoInput, EchoOutput>("echo-payload", new EchoInput() { message = "hello world with payload!" }, bytes);
+        var newbytes = bytes;
         Console.WriteLine(JsonSerializer.Serialize(output));
 
         output = MyLib.Invoke<EchoInput, EchoOutput>("invalid-route", new EchoInput() { message = "hello world!" });

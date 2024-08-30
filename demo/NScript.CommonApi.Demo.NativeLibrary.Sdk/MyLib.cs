@@ -12,9 +12,9 @@ public class MyLib
     public class MyLibWrapper : ApiWrapper
     {
         [DllImport("NScript.CommonApi.Demo.NativeLibrary")]
-        static extern IntPtr commonapi_demo_api(IntPtr pRoute, IntPtr pJsonParams, IntPtr pDataPayload, int payloadLength);
+        static extern OutputPayload commonapi_demo_api(IntPtr pRoute, IntPtr pJsonParams, IntPtr pDataPayload, int payloadLength);
 
-        protected override IntPtr InvokeApi(IntPtr pRoute, IntPtr pJsonParams, IntPtr pDataPayload, int payloadLength)
+        protected override OutputPayload InvokeApi(IntPtr pRoute, IntPtr pJsonParams, IntPtr pDataPayload, int payloadLength)
         {
             return commonapi_demo_api(pRoute, pJsonParams, pDataPayload, payloadLength);
         }
@@ -29,7 +29,7 @@ public class MyLib
     /// 如果想 jit 模式调用，需要设置 jit handle
     /// </summary>
     /// <param name="jitHandle"></param>
-    public static void SetJitHandle(Func<IntPtr, IntPtr, IntPtr, int, IntPtr> jitHandle)
+    public static void SetJitHandle(Func<IntPtr, IntPtr, IntPtr, int, OutputPayload> jitHandle)
     {
         NativeApi.Value.SetJitHook(jitHandle);
     }

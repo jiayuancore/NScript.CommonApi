@@ -19,12 +19,12 @@ public class Api : BaseApi
 
     // 可以修改 EntryPoint 为其它名字
     [UnmanagedCallersOnly(EntryPoint = "commonapi_demo_api")]
-    public unsafe static IntPtr Handle(IntPtr pRoute, IntPtr pJsonParams, IntPtr pDataPayload, int payloadLength)
+    public unsafe static OutputPayload Handle(IntPtr pRoute, IntPtr pJsonParams, IntPtr pDataPayload, int payloadLength)
     {
         return Instance.Value.HandleApi(pRoute, pJsonParams, pDataPayload, payloadLength);
     }
 
-    public static IntPtr JitHandle(IntPtr pRoute, IntPtr pJsonParams, IntPtr pDataPayload, int payloadLength)
+    public static OutputPayload JitHandle(IntPtr pRoute, IntPtr pJsonParams, IntPtr pDataPayload, int payloadLength)
     {
         return Instance.Value.HandleApi(pRoute, pJsonParams, pDataPayload, payloadLength);
     }
